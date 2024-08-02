@@ -125,7 +125,7 @@ impl Display for Decimal {
 			return write!(f, "0");
 		} else if self.exponent < 21.0 && self.exponent > -7.0 {
 			return if let Some(places) = f.precision() {
-				write!(f, "{:.*}", places, self.to_number().to_string())
+				write!(f, "{:.*}", places, self.to_number())
 			} else {
 				write!(f, "{}", self.to_number())
 			};

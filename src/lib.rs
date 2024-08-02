@@ -3,6 +3,9 @@ use std::f64::consts::{E, LN_10, LOG2_10, PI};
 use std::fmt::{Display, Formatter, Result};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
+use num::traits::{ConstOne, ConstZero};
+use num::{One, Zero};
+
 mod macros;
 
 #[cfg(test)]
@@ -489,6 +492,30 @@ impl Default for Decimal {
 	fn default() -> Self {
 		Decimal::ZERO
 	}
+}
+
+impl Zero for Decimal {
+	fn zero() -> Self {
+		ConstZero::ZERO
+	}
+
+	fn is_zero(&self) -> bool {
+		self.equals(&Self::zero())
+	}
+}
+
+impl One for Decimal {
+	fn one() -> Self {
+		Self::ONE
+	}
+}
+
+impl ConstZero for Decimal {
+	const ZERO: Self = Self{ mantissa: 0.0, exponent: 0.0 };
+}
+
+impl ConstOne for Decimal {
+	const ONE: Self = Self{ mantissa: 1.0, exponent: 0.0 };
 }
 
 // This allows converting virtually any number to a Decimal.

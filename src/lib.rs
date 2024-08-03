@@ -749,7 +749,7 @@ impl Decimal {
 	/// Rounds the Decimal, if the exponent isn't greater than the maximum significant digits.
 	pub fn round(&self) -> Decimal {
 		if self.exponent < -1.0 {
-			return Decimal::new(0.0);
+			return Decimal::ZERO;
 		} else if self.exponent < MAX_SIGNIFICANT_DIGITS as f64 {
 			return Decimal::new(self.to_number().round());
 		}
@@ -760,7 +760,7 @@ impl Decimal {
 	/// Truncates the Decimal, if the exponent isn't greater than the maximum significant digits.
 	pub fn trunc(&self) -> Decimal {
 		if self.exponent < 0.0 {
-			return Decimal::new(0.0);
+			return Decimal::ZERO;
 		} else if self.exponent < MAX_SIGNIFICANT_DIGITS as f64 {
 			return Decimal::new(self.to_number().trunc());
 		}
@@ -771,7 +771,7 @@ impl Decimal {
 	/// Floors the Decimal, if the exponent isn't greater than the maximum significant digits.
 	pub fn floor(&self) -> Decimal {
 		if self.exponent < -1.0 {
-			return if self.sign() >= 0 { Decimal::new(0.0) } else { Decimal::new(-1.0) };
+			return if self.sign() >= 0 { Decimal::ZERO } else { Decimal::new(-1.0) };
 		} else if self.exponent < MAX_SIGNIFICANT_DIGITS as f64 {
 			return Decimal::new(self.to_number().floor());
 		}
@@ -782,7 +782,7 @@ impl Decimal {
 	/// Rounds the Decimal to its ceiling, if the exponent isn't greater than the maximum significant digits.
 	pub fn ceil(&self) -> Decimal {
 		if self.exponent < -1.0 {
-			return if self.sign() > 0 { Decimal::new(1.0) } else { Decimal::new(0.0) };
+			return if self.sign() > 0 { Decimal::ONE } else { Decimal::ZERO };
 		} else if self.exponent < MAX_SIGNIFICANT_DIGITS as f64 {
 			return Decimal::new(self.to_number().ceil());
 		}
@@ -1067,17 +1067,17 @@ impl Decimal {
 	}
 
 	pub fn asinh(&self) -> f64 {
-		(self + (self.sqr() + Decimal::new(1.0)).sqrt()).ln()
+		(self + (self.sqr() + Decimal::ONE).sqrt()).ln()
 	}
 	pub fn acosh(&self) -> f64 {
-		(self + (self.sqr() - Decimal::new(1.0)).sqrt()).ln()
+		(self + (self.sqr() - Decimal::ONE).sqrt()).ln()
 	}
 	pub fn atanh(&self) -> f64 {
-		if self.abs().gte(&Decimal::new(1.0)) {
+		if self.abs().gte(&Decimal::ONE) {
 			return f64::NAN;
 		}
 
-		((Decimal::new(1.0) + self) / (Decimal::new(1.0) - self)).ln() / 2.0
+		((Decimal::ONE + self) / (Decimal::ONE - self)).ln() / 2.0
 	}
 
 	pub fn dp(&self) -> i32 {
@@ -1128,13 +1128,13 @@ impl Decimal {
 /// Adapted from Trimps source code.
 pub fn afford_geometric_series(resources_available: &Decimal, price_start: &Decimal, price_ratio: &Decimal, current_owned: &Decimal) -> Decimal {
 	let actual_start = price_start * price_ratio.pow(current_owned);
-	Decimal::new((resources_available / actual_start * (price_ratio - Decimal::new(1.0)) + Decimal::new(1.0)).log10() / price_ratio.log10()).floor()
+	Decimal::new((resources_available / actual_start * (price_ratio - Decimal::ONE) + Decimal::ONE).log10() / price_ratio.log10()).floor()
 }
 
 /// How much resource would it cost to buy (numItems) items if you already have currentOwned,
 /// the initial price is priceStart and it multiplies by priceRatio each purchase?
 pub fn sum_geometric_series(num_items: &Decimal, price_start: &Decimal, price_ratio: &Decimal, current_owned: &Decimal) -> Decimal {
-	price_start * price_ratio.pow(current_owned) * (Decimal::new(1.0) - price_ratio.pow(num_items)) / (Decimal::new(1.0) - price_ratio)
+	price_start * price_ratio.pow(current_owned) * (Decimal::ONE - price_ratio.pow(num_items)) / (Decimal::ONE - price_ratio)
 }
 
 /// If you're willing to spend 'resourcesAvailable' and want to buy something with additively
@@ -1156,7 +1156,7 @@ pub fn afford_arithmetic_series(resources_available: &Decimal, price_start: &Dec
 pub fn sum_arithmetic_series(num_items: &Decimal, price_start: &Decimal, price_add: &Decimal, current_owned: &Decimal) -> Decimal {
 	let actual_start = price_start + (current_owned * price_add); // (n/2)*(2*a+(n-1)*d)
 
-	num_items / Decimal::new(2.0) * (actual_start * Decimal::new(2.0) + (num_items - Decimal::new(1.0)) + num_items - Decimal::new(1.0)) * price_add
+	num_items / Decimal::new(2.0) * (actual_start * Decimal::new(2.0) + (num_items - Decimal::ONE) + num_items - Decimal::ONE) * price_add
 }
 
 /// When comparing two purchases that cost (resource) and increase your resource/sec by (deltaRpS),

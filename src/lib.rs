@@ -511,11 +511,17 @@ impl One for Decimal {
 }
 
 impl ConstZero for Decimal {
-	const ZERO: Self = Self{ mantissa: 0.0, exponent: 0.0 };
+	const ZERO: Self = Self {
+		mantissa: 0.0,
+		exponent: 0.0,
+	};
 }
 
 impl ConstOne for Decimal {
-	const ONE: Self = Self{ mantissa: 1.0, exponent: 0.0 };
+	const ONE: Self = Self {
+		mantissa: 1.0,
+		exponent: 0.0,
+	};
 }
 
 // This allows converting virtually any number to a Decimal.
@@ -535,7 +541,10 @@ impl_from!(f32);
 impl_from!(f64);
 
 impl Decimal {
-	pub const ZERO: Decimal = Decimal{ mantissa: 0.0, exponent: 0.0 };
+	pub const ZERO: Decimal = Decimal {
+		mantissa: 0.0,
+		exponent: 0.0,
+	};
 
 	/// Creates a new instance of Decimal with the given value.
 	pub fn new(value: f64) -> Decimal {
